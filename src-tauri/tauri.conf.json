@@ -1,0 +1,51 @@
+{
+  "identifier": "main-user-files-write",
+  "build": {
+    "beforeDevCommand": "yarn dev",
+    "beforeBuildCommand": "yarn build",
+    "frontendDist": "../dist",
+    "devUrl": "http://localhost:1420"
+  },
+  "plugins": {
+    "cli": {
+      "description": "Depliykit GUI",
+      "args": [
+        {
+          "name": "skip",
+          "short": "s",
+          "description": "Skip select Desktop or Install view"
+        },
+        {
+          "name": "resource-dir",
+          "short": "d",
+          "description": "Resource directory",
+          "takesValue": true,
+          "required": true
+        }
+      ]
+    }
+  },
+  "productName": "deploykit-gui",
+  "mainBinaryName": "deploykit-gui",
+  "version": "0.10.0",
+  "app": {
+    "windows": [
+      {
+        "fullscreen": false,
+        "resizable": false,
+        "decorations": false,
+        "title": "deploykit-gui",
+        "width": 1024,
+        "height": 768,
+        "minWidth": 1024,
+        "minHeight": 768,
+        "maxWidth": 1024,
+        "maxHeight": 768,
+        "alwaysOnTop": true
+      }
+    ],
+    "security": {
+      "csp": null
+    }
+  }
+}
