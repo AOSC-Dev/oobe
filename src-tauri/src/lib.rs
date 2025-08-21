@@ -72,6 +72,7 @@ async fn set_config(config: &str) -> TauriResult<()> {
 
     if size != 0.0 {
         install::swap::create_swapfile(size, Path::new("/"))?;
+        install::genfstab::write_swap_entry_to_fstab()?;
     }
 
     if let Some(fullname) = fullname {
