@@ -6,27 +6,9 @@
     "frontendDist": "../dist",
     "devUrl": "http://localhost:1420"
   },
-  "plugins": {
-    "cli": {
-      "description": "Depliykit GUI",
-      "args": [
-        {
-          "name": "skip",
-          "short": "s",
-          "description": "Skip select Desktop or Install view"
-        },
-        {
-          "name": "resource-dir",
-          "short": "d",
-          "description": "Resource directory",
-          "takesValue": true,
-          "required": true
-        }
-      ]
-    }
-  },
-  "productName": "deploykit-gui",
-  "mainBinaryName": "deploykit-gui",
+  "plugins": {},
+  "productName": "oobe",
+  "mainBinaryName": "oobe",
   "version": "0.10.0",
   "app": {
     "windows": [

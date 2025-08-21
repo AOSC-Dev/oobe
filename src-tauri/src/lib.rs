@@ -7,13 +7,13 @@ use serde::Serialize;
 use std::collections::HashSet;
 use std::env;
 use std::io;
+use std::path::Path;
 use std::process::Command;
 use std::sync::atomic::AtomicBool;
 use std::sync::atomic::Ordering;
 use std::sync::LazyLock;
 use tauri::Manager;
 use tauri::WindowEvent;
-use tauri_plugin_cli::CliExt;
 use tracing::info;
 use tracing::level_filters::LevelFilter;
 use tracing_subscriber::fmt;
@@ -22,10 +22,14 @@ use tracing_subscriber::util::SubscriberInitExt;
 use tracing_subscriber::EnvFilter;
 use tracing_subscriber::Layer;
 
+use crate::utils::handle_serde_config;
+use crate::utils::OobeConfig;
+use crate::utils::SwapFile;
+use crate::utils::Timezone;
+
 mod parser;
 mod utils;
 
-static SKIP_DESKTOP_OR_INSTALL: AtomicBool = AtomicBool::new(false);
 const DEFAULT_LANG: &str = "en_US.UTF-8";
 static USERNAME_BLOCKLIST: LazyLock<HashSet<&str>> =
     LazyLock::new(|| include_str!("../users").lines().collect::<HashSet<_>>());
@@ -34,9 +38,12 @@ static CAN_CLOSE: AtomicBool = AtomicBool::new(false);
 #[derive(Debug, Serialize)]
 pub struct CommandError(String);
 
-impl From<anyhow::Error> for CommandError {
-    fn from(error: anyhow::Error) -> Self {
-        Self(format!("{:#}", error)) // Serialize anyhow::Error into a string
+impl<E> From<E> for CommandError
+where
+    E: Into<anyhow::Error>,
+{
+    fn from(err: E) -> Self {
+        Self(err.into().to_string())
     }
 }
 
@@ -49,12 +56,37 @@ fn list_timezone() -> TauriResult<Vec<ZoneInfo>> {
 
 #[tauri::command]
 async fn set_config(config: &str) -> TauriResult<()> {
-    Ok(())
-}
+    let OobeConfig {
+        locale,
+        user,
+        pwd,
+        fullname,
+        hostname,
+        rtc_as_localtime,
+        timezone,
+        swapfile,
+    } = handle_serde_config(config)?;
 
-#[tauri::command]
-fn is_skip() -> bool {
-    SKIP_DESKTOP_OR_INSTALL.load(Ordering::SeqCst)
+    install::hostname::set_hostname(&hostname)?;
+    install::locale::set_locale(&locale.locale)?;
+    install::user::add_new_user(&user, &pwd)?;
+    install::locale::set_hwclock_tc(!rtc_as_localtime)?;
+
+    let SwapFile { size } = swapfile;
+
+    if size != 0.0 {
+        install::swap::create_swapfile(size, Path::new("/"))?;
+    }
+
+    if let Some(fullname) = fullname {
+        install::user::passwd_set_fullname(&fullname, &user)?;
+    }
+
+    let Timezone { data: timezone } = timezone;
+
+    install::zoneinfo::set_zoneinfo(&timezone)?;
+
+    Ok(())
 }
 
 #[tauri::command]
@@ -130,7 +162,6 @@ pub async fn run() {
         .invoke_handler(tauri::generate_handler![
             set_config,
             list_timezone,
-            is_skip,
             set_locale,
             read_locale,
             is_lang_already_set,
