@@ -7,7 +7,7 @@ import DKBody from "@/components/DKBody.vue";
 <script lang="ts">
 import { invoke } from "@tauri-apps/api/core";
 import { defineComponent, inject } from "vue";
-import { Config, SquashfsInfo } from "../config.ts";
+import { Config } from "../config.ts";
 
 function recommendSizeGiB(recommendSize: number) {
   return Math.floor(recommendSize / 1073741824);
@@ -46,34 +46,6 @@ export default defineComponent({
         recommendSwapSize > 32 * 1024 * 1024 * 1024
           ? 32 * 1024 * 1024 * 1024
           : recommendSwapSize;
-
-      let sqfsSize;
-      if (!this.config.is_offline_install) {
-        const squashfsInfo = (await invoke("get_squashfs_info", {
-          v: this.config.variant,
-          url: this.config.mirror?.url,
-        })) as SquashfsInfo;
-        sqfsSize = squashfsInfo.downloadSize + squashfsInfo.instSize;
-      } else {
-        const info = (await invoke("get_squashfs_info", {
-          v: this.config.variant,
-        })) as SquashfsInfo;
-        sqfsSize = info.instSize * 1.25;
-      }
-
-      if (this.config.partition === undefined) {
-        return;
-      }
-
-      if (this.recommendSize > this.config.partition.size - sqfsSize) {
-        this.canRecommend = false;
-        this.type = 1;
-        this.recommendSize = this.config.partition.size - sqfsSize;
-      }
-
-      if (this.recommendSize < 0) {
-        this.recommendSize = 0;
-      }
 
       this.size = recommendSizeGiB(this.recommendSize);
 

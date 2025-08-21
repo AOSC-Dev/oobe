@@ -9,11 +9,8 @@ use std::env;
 use std::io;
 use std::path::Path;
 use std::process::Command;
-use std::sync::atomic::AtomicBool;
-use std::sync::atomic::Ordering;
 use std::sync::LazyLock;
-use tauri::Manager;
-use tauri::WindowEvent;
+use sysinfo::System;
 use tracing::info;
 use tracing::level_filters::LevelFilter;
 use tracing_subscriber::fmt;
@@ -33,7 +30,6 @@ mod utils;
 const DEFAULT_LANG: &str = "en_US.UTF-8";
 static USERNAME_BLOCKLIST: LazyLock<HashSet<&str>> =
     LazyLock::new(|| include_str!("../users").lines().collect::<HashSet<_>>());
-static CAN_CLOSE: AtomicBool = AtomicBool::new(false);
 
 #[derive(Debug, Serialize)]
 pub struct CommandError(String);
@@ -100,10 +96,51 @@ async fn read_locale() -> String {
 }
 
 #[tauri::command]
+async fn get_memory() -> u64 {
+    let mut sys = System::new_all();
+    sys.refresh_memory();
+    let total_memory = sys.total_memory();
+
+    total_memory
+}
+
+#[tauri::command]
+async fn get_recommend_swap_size() -> f64 {
+    let mut sys = System::new_all();
+    sys.refresh_memory();
+    let total_memory = sys.total_memory();
+
+    get_recommend_swap_size_inner(total_memory)
+}
+
+pub fn get_recommend_swap_size_inner(mem: u64) -> f64 {
+    const MAX_MEMORY: f64 = 32.0;
+
+    let mem: f64 = mem as f64 / 1024.0 / 1024.0 / 1024.0;
+
+    let res = if mem <= 1.0 {
+        mem * 2.0
+    } else {
+        mem + mem.sqrt().round()
+    };
+
+    if res >= MAX_MEMORY {
+        MAX_MEMORY * 1024.0_f32.powi(3) as f64
+    } else {
+        res * 1024.0_f32.powi(3) as f64
+    }
+}
+
+#[tauri::command]
 fn set_locale(locale: &str) {
     if let Err(e) = set_locale_inner(locale) {
         eprintln!("{e}");
     }
+}
+
+#[tauri::command]
+fn exit() {
+    std::process::exit(0)
 }
 
 #[tauri::command]
@@ -145,19 +182,6 @@ pub async fn run() {
 
     tauri::Builder::default()
         .plugin(tauri_plugin_shell::init())
-        .setup(move |app| {
-            let window = app.get_webview_window("main").unwrap();
-
-            window.on_window_event(|e| {
-                if let WindowEvent::CloseRequested { api, .. } = e {
-                    if !CAN_CLOSE.load(Ordering::SeqCst) {
-                        api.prevent_close();
-                    }
-                }
-            });
-
-            Ok(())
-        })
         .invoke_handler(tauri::generate_handler![
             set_config,
             list_timezone,
@@ -165,6 +189,9 @@ pub async fn run() {
             read_locale,
             is_lang_already_set,
             is_block_username,
+            get_memory,
+            get_recommend_swap_size,
+            exit
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

@@ -4085,6 +4085,7 @@ dependencies = [
  "nom 8.0.0",
  "serde",
  "serde_json",
+ "sysinfo",
  "tauri",
  "tauri-build",
  "tauri-plugin-cli",
