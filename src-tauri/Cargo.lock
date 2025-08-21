@@ -957,27 +957,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "deploykit-gui"
-version = "0.10.0"
-dependencies = [
- "anyhow",
- "install",
- "nom 8.0.0",
- "serde",
- "serde_json",
- "tauri",
- "tauri-build",
- "tauri-plugin-cli",
- "tauri-plugin-dialog",
- "tauri-plugin-shell",
- "tokio",
- "tracing",
- "tracing-subscriber",
- "vergen",
- "vergen-gix",
-]
-
-[[package]]
 name = "deranged"
 version = "0.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -4096,6 +4075,27 @@ name = "once_cell_polyfill"
 version = "1.70.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "a4895175b425cb1f87721b59f0f286c2092bd4af812243672510e1ac53e2e0ad"
+
+[[package]]
+name = "oobe"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "install",
+ "nom 8.0.0",
+ "serde",
+ "serde_json",
+ "tauri",
+ "tauri-build",
+ "tauri-plugin-cli",
+ "tauri-plugin-dialog",
+ "tauri-plugin-shell",
+ "tokio",
+ "tracing",
+ "tracing-subscriber",
+ "vergen",
+ "vergen-gix",
+]
 
 [[package]]
 name = "open"

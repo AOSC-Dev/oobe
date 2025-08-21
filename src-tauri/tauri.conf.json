@@ -6,7 +6,6 @@
     "frontendDist": "../dist",
     "devUrl": "http://localhost:1420"
   },
-  "plugins": {},
   "productName": "oobe",
   "mainBinaryName": "oobe",
   "version": "0.10.0",
