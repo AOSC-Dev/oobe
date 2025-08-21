@@ -1,7 +1,5 @@
 <script setup lang="ts">
 import { RouterView } from 'vue-router';
-import { listen } from '@tauri-apps/api/event';
-import { invoke } from '@tauri-apps/api/core';
 import DKLogo from '@/components/DKLogo.vue';
 import LangSelect from '@/views/LangSelect.vue';
 import DKLayout from '@/components/DKLayout.vue';
@@ -9,7 +7,6 @@ import DKLayout from '@/components/DKLayout.vue';
 
 <script lang="ts">
 import { defineComponent, inject } from 'vue';
-import { ProgressDetail } from './config.ts';
 
 export default defineComponent({
   data() {
@@ -21,59 +18,12 @@ export default defineComponent({
       current_lang: 'en',
       lightup: 0,
       timer: null,
-      progressDetail: {},
       can_quit: true,
-      isInstall: false,
-      playList: [],
-      volume: 0.3,
-      muted: false,
-      playing: true,
       curr: 0,
       switchLocale: inject('switchLocale') as (text: string) => Promise<void>,
     };
   },
-  computed: {
-    eta_value() {
-      const details = this.progressDetail as ProgressDetail;
-      if (details.eta_lo > 0) {
-        return this.$t('d.eta-0', {
-          time_lo: details.eta_lo,
-          time_hi: details.eta_hi,
-        });
-      }
-
-      if (details.eta_hi > 0) {
-        return this.$t('d.eta-1', { time: details.eta_hi });
-      }
-
-      return '';
-    },
-    install_info() {
-      const details = this.progressDetail as ProgressDetail;
-      if (
-        Object.keys(details).length === 0
-        || !Object.keys(details).includes('status')
-      ) return '';
-      if (
-        details.status
-        && (details.status === 'Pending'
-          || details.status === 'Error'
-          || details.status === 'Finish')
-      ) return '';
-      const { status } = details;
-      if (typeof (status) === 'string') return '';
-      if (this.curr !== status?.c) {
-        this.curr = status?.c as number;
-        this.progress += 6.25;
-      }
-      return this.$t('install.status', {
-        curr: status?.c,
-        total: status?.t,
-        msg: this.$t(`install.i${status?.c}`),
-        perc: status?.p,
-      });
-    },
-  },
+  computed: {},
   methods: {
     on_abort() {
       const { path } = this.$router.currentRoute.value;
@@ -117,12 +67,6 @@ export default defineComponent({
           this.execute_lightup();
         });
     },
-    onInstallDk() {
-      this.isInstall = true;
-    },
-    on_progress_update(progress: ProgressDetail) {
-      this.progressDetail = progress;
-    },
   },
   async mounted() {
     window.addEventListener('contextmenu', (event) => {
@@ -140,48 +84,7 @@ export default defineComponent({
       config: {},
     };
   },
-  async created() {
-    let isStop = false;
-    listen('progress', (event) => {
-      this.progressDetail = event.payload as ProgressDetail;
-      const details = this.progressDetail;
-      const { status } = details as ProgressDetail;
-      const { path } = this.$router.currentRoute.value;
-
-      if (status === 'Finish') {
-        this.$router.replace('/finish');
-        if (!isStop) {
-          (this.$refs.player as any).stop();
-          isStop = true;
-        }
-      } else if (status === 'Error' && path !== '/error' && path !== '/abort') {
-        this.$router.replace({
-          path: `/error/${encodeURIComponent(JSON.stringify(event.payload))}`,
-          query: { currentRoute: path },
-        });
-      } else if (
-        status !== 'Pending'
-        && path !== '/install'
-        && path !== '/abort'
-      ) {
-        this.$router.replace('/install');
-      }
-    });
-
-    const isInstall = await invoke('is_skip') as boolean;
-    this.isInstall = isInstall;
-
-    try {
-      const playlist = await invoke('get_bgm_list') as [];
-      this.playList = playlist;
-    } catch (e) {
-      const { path } = this.$router.currentRoute.value;
-      this.$router.replace({
-        path: `/error/${encodeURIComponent(JSON.stringify(e))}`,
-        query: { currentRoute: path },
-      });
-    }
-  },
+  async created() {},
 });
 </script>
 
@@ -190,27 +93,7 @@ export default defineComponent({
     :class="'lang-' + current_lang"
     style="padding: 0 2rem; margin-bottom: 1rem"
   >
-    <button
-      class="quit-button"
-      style="padding-top: 1rem"
-      :aria-label="$t('d.sr-close')"
-      @click="on_abort"
-      @keyup.enter="on_abort"
-      :disabled="!can_quit"
-      v-show="
-        langSelected &&
-        isInstall &&
-        $router.currentRoute.value.path !== '/abort'
-      "
-    >
-      <img
-        :alt="$t('d.sr-close-icon')"
-        src="@/../assets/window-close-symbolic.svg"
-        width="30"
-        height="30"
-      />
-    </button>
-    <header style="width: 90%" v-if="langSelected && isInstall">
+    <header style="width: 90%" v-if="langSelected">
       <DKLogo />
     </header>
   </div>
@@ -218,14 +101,13 @@ export default defineComponent({
   <LangSelect v-if="!langSelected" @update:lang="on_lang_selected" />
   <DesktopOrInstall
     :class="'lang-' + current_lang"
-    v-if="langSelected && !isInstall"
-    @update:install="onInstallDk"
+    v-if="langSelected"
   />
   <!-- main content -->
   <DKLayout
     :class="'lang-' + current_lang"
     :main_class="lightup_seq(1)"
-    v-if="langSelected && isInstall"
+    v-if="langSelected"
   >
     <RouterView @update:can_quit="(v: boolean) => (can_quit = v)" />
     <template #left>
@@ -235,24 +117,12 @@ export default defineComponent({
         <nav :class="nav_menu_bold(2)">{{ $t("d.nav-2") }}</nav>
         <nav :class="nav_menu_bold(3)">{{ $t("d.nav-3") }}</nav>
       </div>
-      <div v-if="page_number >= 2">
-        <AudioPlayer
-          ref="player"
-          :list="playList"
-          :volume="volume"
-          :muted="muted"
-          :playing="playing"
-          @update:playing="(v: boolean) => (playing = v)"
-          @update:volume="(v: number) => (volume = v)"
-          @update:muted="(v: boolean) => (muted = v)"
-        ></AudioPlayer>
-      </div>
     </template>
   </DKLayout>
   <!-- status bar -->
   <div
     class="status-bar"
-    v-if="langSelected && isInstall"
+    v-if="langSelected"
     :class="[lightup_seq(4), 'lang-' + current_lang]"
   >
     <progress
@@ -262,10 +132,6 @@ export default defineComponent({
       max="100"
       class="progress-bar"
     ></progress>
-    <span class="info-box" v-if="page_number > 1 && page_number < 4">{{
-      install_info
-    }}</span>
-    <label for="progressbar" class="eta-box">{{ eta_value }}</label>
   </div>
 </template>
 
