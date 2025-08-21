@@ -145,7 +145,6 @@ pub async fn run() {
 
     tauri::Builder::default()
         .plugin(tauri_plugin_shell::init())
-        .plugin(tauri_plugin_cli::init())
         .setup(move |app| {
             let window = app.get_webview_window("main").unwrap();
 
