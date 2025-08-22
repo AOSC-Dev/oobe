@@ -161,9 +161,8 @@ fn set_locale_inner(locale: &str) -> io::Result<()> {
     Ok(())
 }
 
-#[tokio::main]
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
-pub async fn run() {
+pub fn run() {
     // initialize tracing
     let env_log = EnvFilter::try_from_default_env();
 
