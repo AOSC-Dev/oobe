@@ -1,7 +1,13 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
+use install::genfstab;
+use install::hostname;
+use install::locale;
+use install::swap;
+use install::user;
 use install::utils::run_command;
+use install::zoneinfo;
 use parser::list_zoneinfo;
 use parser::ZoneInfo;
 use serde::Serialize;
@@ -64,26 +70,25 @@ async fn set_config(config: &str) -> TauriResult<()> {
         swapfile,
     } = handle_serde_config(config)?;
 
-    install::hostname::set_hostname(&hostname)?;
-    install::locale::set_locale(&locale.locale)?;
-    install::user::add_new_user(&user, &pwd)?;
-    install::locale::set_hwclock_tc(!rtc_as_localtime)?;
+    hostname::set_hostname(&hostname)?;
+    locale::set_locale(&locale.locale)?;
+    user::add_new_user(&user, &pwd)?;
+    locale::set_hwclock_tc(!rtc_as_localtime)?;
 
     let SwapFile { size } = swapfile;
 
     if size != 0.0 {
-        let size = size * 1024.0 * 1024.0 * 1024.0;
-        install::swap::create_swapfile(size, Path::new("/"))?;
-        install::genfstab::write_swap_entry_to_fstab()?;
+        swap::create_swapfile(size * 1024.0 * 1024.0 * 1024.0, Path::new("/"))?;
+        genfstab::write_swap_entry_to_fstab()?;
     }
 
     if let Some(fullname) = fullname {
-        install::user::passwd_set_fullname(&fullname, &user)?;
+        user::passwd_set_fullname(&fullname, &user)?;
     }
 
     let Timezone { data: timezone } = timezone;
 
-    install::zoneinfo::set_zoneinfo(&timezone)?;
+    zoneinfo::set_zoneinfo(&timezone)?;
 
     // Re-gemerate machine id
     run_command(
