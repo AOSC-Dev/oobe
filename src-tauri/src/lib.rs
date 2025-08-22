@@ -1,6 +1,7 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
+use install::utils::run_command;
 use parser::list_zoneinfo;
 use parser::ZoneInfo;
 use serde::Serialize;
@@ -85,7 +86,11 @@ async fn set_config(config: &str) -> TauriResult<()> {
     install::zoneinfo::set_zoneinfo(&timezone)?;
 
     // Re-gemerate machine id
-    Command::new("systemd-machine-id-setup").output().ok();
+    run_command(
+        "systemd-machine-id-setup",
+        &[] as &[&str],
+        vec![] as Vec<(String, String)>,
+    )?;
 
     Ok(())
 }

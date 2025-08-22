@@ -25,7 +25,7 @@ tauri-plugin-shell = "2.0.0"
 tauri-plugin-dialog = "2.0.0"
 tauri-plugin-cli = "2.0.0"
 anyhow = "1"
-install = { git = "https://github.com/AOSC-Dev/deploykit-backend", package = "install", rev = "fe7cdda45715c2c973a6292b69291c74e6b975fe" }
+install = { git = "https://github.com/AOSC-Dev/deploykit-backend", package = "install", rev = "bae5498d63207ac59d25614746a24347d91845aa" }
 sysinfo = "0.37"
 
 [features]
