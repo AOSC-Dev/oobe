@@ -1,0 +1,11 @@
+[package]
+name = "common"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+serde = { version = "1", features = ["derive"] }
+install = { git = "https://github.com/AOSC-Dev/deploykit-backend", package = "install", rev = "bae5498d63207ac59d25614746a24347d91845aa" }
+anyhow = "1"
+serde_json = "1"
+nom = "8"

@@ -27,6 +27,7 @@ tauri-plugin-cli = "2.0.0"
 anyhow = "1"
 install = { git = "https://github.com/AOSC-Dev/deploykit-backend", package = "install", rev = "bae5498d63207ac59d25614746a24347d91845aa" }
 sysinfo = "0.37"
+common = { path ="../../common" }
 
 [features]
 # this feature is used for production builds or when `devPath` points to the filesystem

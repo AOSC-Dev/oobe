@@ -1,22 +1,13 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
-use install::genfstab;
-use install::hostname;
-use install::locale;
-use install::swap;
-use install::user;
-use install::utils::run_command;
-use install::zoneinfo;
-use parser::list_zoneinfo;
-use parser::ZoneInfo;
+use common::apply;
+use common::parser::ZoneInfo;
+use common::USERNAME_BLOCKLIST;
 use serde::Serialize;
-use std::collections::HashSet;
 use std::env;
 use std::io;
-use std::path::Path;
 use std::process::Command;
-use std::sync::LazyLock;
 use sysinfo::System;
 use tracing::info;
 use tracing::level_filters::LevelFilter;
@@ -26,17 +17,7 @@ use tracing_subscriber::util::SubscriberInitExt;
 use tracing_subscriber::EnvFilter;
 use tracing_subscriber::Layer;
 
-use crate::utils::handle_serde_config;
-use crate::utils::OobeConfig;
-use crate::utils::SwapFile;
-use crate::utils::Timezone;
-
-mod parser;
-mod utils;
-
 const DEFAULT_LANG: &str = "en_US.UTF-8";
-static USERNAME_BLOCKLIST: LazyLock<HashSet<&str>> =
-    LazyLock::new(|| include_str!("../users").lines().collect::<HashSet<_>>());
 
 #[derive(Debug, Serialize)]
 pub struct CommandError(String);
@@ -54,50 +35,12 @@ type TauriResult<T> = Result<T, CommandError>;
 
 #[tauri::command]
 fn list_timezone() -> TauriResult<Vec<ZoneInfo>> {
-    Ok(list_zoneinfo()?)
+    Ok(common::parser::list_zoneinfo()?)
 }
 
 #[tauri::command]
 async fn set_config(config: &str) -> TauriResult<()> {
-    let OobeConfig {
-        locale,
-        user,
-        pwd,
-        fullname,
-        hostname,
-        rtc_as_localtime,
-        timezone,
-        swapfile,
-    } = handle_serde_config(config)?;
-
-    hostname::set_hostname(&hostname)?;
-    locale::set_locale(&locale.locale)?;
-    user::add_new_user(&user, &pwd)?;
-    locale::set_hwclock_tc(!rtc_as_localtime)?;
-
-    let SwapFile { size } = swapfile;
-
-    if size != 0.0 {
-        swap::create_swapfile(size * 1024.0 * 1024.0 * 1024.0, Path::new("/"))?;
-        genfstab::write_swap_entry_to_fstab()?;
-    }
-
-    if let Some(fullname) = fullname {
-        user::passwd_set_fullname(&fullname, &user)?;
-    }
-
-    let Timezone { data: timezone } = timezone;
-
-    zoneinfo::set_zoneinfo(&timezone)?;
-
-    // Re-gemerate machine id
-    run_command(
-        "systemd-machine-id-setup",
-        &[] as &[&str],
-        vec![] as Vec<(String, String)>,
-    )?;
-
-    Ok(())
+    Ok(apply(config)?)
 }
 
 #[tauri::command]
