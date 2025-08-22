@@ -52,11 +52,14 @@ pub fn langs() -> anyhow::Result<Vec<Lang>> {
 }
 
 pub fn get_recommend_swap_size() -> f64 {
+    get_recommend_swap_size_inner(get_memory())
+}
+
+pub fn get_memory() -> u64 {
     let mut sys = System::new_all();
     sys.refresh_memory();
-    let total_memory = sys.total_memory();
 
-    get_recommend_swap_size_inner(total_memory)
+    sys.total_memory()
 }
 
 pub fn get_recommend_swap_size_inner(mem: u64) -> f64 {

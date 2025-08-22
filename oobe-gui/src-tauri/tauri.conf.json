@@ -6,8 +6,8 @@
     "frontendDist": "../dist",
     "devUrl": "http://localhost:1420"
   },
-  "productName": "oobe",
-  "mainBinaryName": "oobe",
+  "productName": "oobe-gui",
+  "mainBinaryName": "oobe-gui",
   "version": "0.10.0",
   "app": {
     "windows": [

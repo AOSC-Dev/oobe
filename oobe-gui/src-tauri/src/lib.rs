@@ -8,7 +8,6 @@ use serde::Serialize;
 use std::env;
 use std::io;
 use std::process::Command;
-use sysinfo::System;
 use tracing::info;
 use tracing::level_filters::LevelFilter;
 use tracing_subscriber::fmt;
@@ -55,38 +54,12 @@ async fn read_locale() -> String {
 
 #[tauri::command]
 async fn get_memory() -> u64 {
-    let mut sys = System::new_all();
-    sys.refresh_memory();
-    let total_memory = sys.total_memory();
-
-    total_memory
+    common::get_memory()
 }
 
 #[tauri::command]
 async fn get_recommend_swap_size() -> f64 {
-    let mut sys = System::new_all();
-    sys.refresh_memory();
-    let total_memory = sys.total_memory();
-
-    get_recommend_swap_size_inner(total_memory)
-}
-
-pub fn get_recommend_swap_size_inner(mem: u64) -> f64 {
-    const MAX_MEMORY: f64 = 32.0;
-
-    let mem: f64 = mem as f64 / 1024.0 / 1024.0 / 1024.0;
-
-    let res = if mem <= 1.0 {
-        mem * 2.0
-    } else {
-        mem + mem.sqrt().round()
-    };
-
-    if res >= MAX_MEMORY {
-        MAX_MEMORY * 1024.0_f32.powi(3) as f64
-    } else {
-        res * 1024.0_f32.powi(3) as f64
-    }
+    common::get_recommend_swap_size()
 }
 
 #[tauri::command]

@@ -4310,7 +4310,20 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "a4895175b425cb1f87721b59f0f286c2092bd4af812243672510e1ac53e2e0ad"
 
 [[package]]
-name = "oobe"
+name = "oobe-cli"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "common",
+ "i18n-embed",
+ "i18n-embed-fl",
+ "inquire",
+ "rust-embed",
+ "unic-langid",
+]
+
+[[package]]
+name = "oobe-gui"
 version = "0.1.0"
 dependencies = [
  "anyhow",
@@ -4329,19 +4342,6 @@ dependencies = [
  "tracing-subscriber",
  "vergen",
  "vergen-gix",
-]
-
-[[package]]
-name = "oobe-cli"
-version = "0.1.0"
-dependencies = [
- "anyhow",
- "common",
- "i18n-embed",
- "i18n-embed-fl",
- "inquire",
- "rust-embed",
- "unic-langid",
 ]
 
 [[package]]

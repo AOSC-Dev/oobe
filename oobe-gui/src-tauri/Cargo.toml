@@ -1,5 +1,5 @@
 [package]
-name = "oobe"
+name = "oobe-gui"
 version = "0.1.0"
 description = "AOSC OS oobe wizard"
 authors = ["you"]
