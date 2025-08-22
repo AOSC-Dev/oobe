@@ -9,3 +9,4 @@ install = { git = "https://github.com/AOSC-Dev/deploykit-backend", package = "in
 anyhow = "1"
 serde_json = "1"
 nom = "8"
+sysinfo = "0.37"

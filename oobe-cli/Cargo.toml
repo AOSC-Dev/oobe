@@ -7,3 +7,9 @@ edition = "2024"
 inquire = "0.7"
 common = { path = "../common" }
 anyhow = "1"
+
+# i18n
+i18n-embed = { version = "0.16.0", features = ["fluent-system", "desktop-requester"] }
+i18n-embed-fl = "0.10"
+rust-embed = "8.5.0"
+unic-langid = "0.9.5"

@@ -3,7 +3,8 @@ pub mod parser;
 use std::{collections::HashSet, path::Path, sync::LazyLock};
 
 use install::{utils::run_command, *};
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
+use sysinfo::System;
 
 pub static USERNAME_BLOCKLIST: LazyLock<HashSet<&str>> =
     LazyLock::new(|| include_str!("../users").lines().collect::<HashSet<_>>());
@@ -35,7 +36,48 @@ pub struct Timezone {
     pub data: String,
 }
 
-pub fn apply(config: &str) -> anyhow::Result<()> {
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct Lang {
+    lang_english: String,
+    locale: String,
+    lang: String,
+    pub text: String,
+    data: String,
+}
+
+pub const LOCALE_LIST: &str = include_str!("../lang_select.json");
+
+pub fn langs() -> anyhow::Result<Vec<Lang>> {
+    Ok(serde_json::from_str(LOCALE_LIST)?)
+}
+
+pub fn get_recommend_swap_size() -> f64 {
+    let mut sys = System::new_all();
+    sys.refresh_memory();
+    let total_memory = sys.total_memory();
+
+    get_recommend_swap_size_inner(total_memory)
+}
+
+pub fn get_recommend_swap_size_inner(mem: u64) -> f64 {
+    const MAX_MEMORY: f64 = 32.0;
+
+    let mem: f64 = mem as f64 / 1024.0 / 1024.0 / 1024.0;
+
+    let res = if mem <= 1.0 {
+        mem * 2.0
+    } else {
+        mem + mem.sqrt().round()
+    };
+
+    if res >= MAX_MEMORY {
+        MAX_MEMORY * 1024.0_f32.powi(3) as f64
+    } else {
+        res * 1024.0_f32.powi(3) as f64
+    }
+}
+
+pub fn apply(config: OobeConfig) -> anyhow::Result<()> {
     let OobeConfig {
         locale,
         user,
@@ -45,7 +87,7 @@ pub fn apply(config: &str) -> anyhow::Result<()> {
         rtc_as_localtime,
         timezone,
         swapfile,
-    } = serde_json::from_str(config)?;
+    } = config;
 
     hostname::set_hostname(&hostname)?;
     locale::set_locale(&locale.locale)?;

@@ -1,13 +1,13 @@
 use std::fs;
 
 use nom::{
+    IResult, Parser,
     branch::alt,
     bytes::complete::{tag, take_until, take_while1},
     character::complete::multispace1,
     combinator::{map, map_res},
     multi::many0,
     sequence::{preceded, terminated},
-    IResult, Parser,
 };
 
 use serde::Serialize;
@@ -92,4 +92,10 @@ pub fn list_zoneinfo() -> anyhow::Result<Vec<ZoneInfo>> {
     );
 
     Ok(list)
+}
+
+impl std::fmt::Display for ZoneInfo {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{}", self.data)
+    }
 }

@@ -40,7 +40,7 @@ fn list_timezone() -> TauriResult<Vec<ZoneInfo>> {
 
 #[tauri::command]
 async fn set_config(config: &str) -> TauriResult<()> {
-    Ok(apply(config)?)
+    Ok(apply(serde_json::from_str(config)?)?)
 }
 
 #[tauri::command]
