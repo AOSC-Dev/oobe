@@ -84,6 +84,9 @@ async fn set_config(config: &str) -> TauriResult<()> {
 
     install::zoneinfo::set_zoneinfo(&timezone)?;
 
+    // Re-gemerate machine id
+    Command::new("systemd-machine-id-setup").output().ok();
+
     Ok(())
 }
 
