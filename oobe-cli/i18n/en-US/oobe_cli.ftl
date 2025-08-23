@@ -61,3 +61,4 @@ hostname-required = A valid hostname is required.
 yn-confirm-required = Confirmation required: please type 'Y' to confirm, 'N' to abort.
 installation-aborted = Installation has been aborted.
 partition-unformatted = { $path } unformatted, will format this partition to ext4 filesystem.
+system-username = { $username } is a system reserved user name.

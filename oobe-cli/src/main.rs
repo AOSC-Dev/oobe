@@ -3,7 +3,8 @@ mod i18n;
 use std::error::Error;
 
 use common::{
-    Locale, OobeConfig, SwapFile, apply, get_recommend_swap_size, langs, parser::list_zoneinfo,
+    Locale, OobeConfig, SwapFile, USERNAME_BLOCKLIST, apply, get_recommend_swap_size, langs,
+    parser::list_zoneinfo,
 };
 use i18n_embed::DesktopLanguageRequester;
 use inquire::{
@@ -61,6 +62,10 @@ fn validate_hostname(input: &str) -> std::result::Result<Validation, Box<dyn Err
 }
 
 fn validate_username(input: &str) -> std::result::Result<Validation, Box<dyn Error + Send + Sync>> {
+    if USERNAME_BLOCKLIST.contains(input) {
+        return Ok(Validation::Invalid(fl!("system-username").into()));
+    }
+
     if input.starts_with(|x: char| x.is_ascii_digit()) {
         return Ok(Validation::Invalid(
             fl!("username-illegal-starts-with-number").into(),
