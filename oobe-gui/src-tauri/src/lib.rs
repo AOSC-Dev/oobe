@@ -58,8 +58,8 @@ async fn get_memory() -> u64 {
 }
 
 #[tauri::command]
-async fn get_recommend_swap_size() -> f64 {
-    common::get_recommend_swap_size()
+async fn get_recommend_swap_size() -> TauriResult<f64> {
+    Ok(common::get_recommend_swap_size()?)
 }
 
 #[tauri::command]

@@ -168,11 +168,7 @@ fn main() -> anyhow::Result<()> {
         .with_default(false)
         .prompt()?;
 
-    let mut recommend_swap_file_size = get_recommend_swap_size();
-
-    if recommend_swap_file_size > 32.0 * 1024.0 * 1024.0 * 1024.0 {
-        recommend_swap_file_size = 32.0 * 1024.0 * 1024.0 * 1024.0;
-    }
+    let recommend_swap_file_size = get_recommend_swap_size()?;
 
     apply(OobeConfig {
         locale: Locale {

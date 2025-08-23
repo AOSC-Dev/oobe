@@ -51,8 +51,15 @@ pub fn langs() -> anyhow::Result<Vec<Lang>> {
     Ok(serde_json::from_str(LOCALE_LIST)?)
 }
 
-pub fn get_recommend_swap_size() -> f64 {
-    get_recommend_swap_size_inner(get_memory())
+pub fn get_recommend_swap_size() -> anyhow::Result<f64> {
+    let mut res = get_recommend_swap_size_inner(get_memory());
+    let available_space = fs4::available_space("/")? as f64;
+
+    if res >= available_space {
+        res = (res - available_space) / 1.25
+    }
+
+    Ok(res)
 }
 
 pub fn get_memory() -> u64 {
