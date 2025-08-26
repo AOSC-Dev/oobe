@@ -2,12 +2,12 @@
 Description=AOSC OS Out-of-box Setup (GUI)
 ConditionFirstBoot=true
 ConditionPathExists=!/var/lib/dpkg/info/kde-base.list
-After=systemd-remount-fs.service systemd-firstboot.service systemd-vconsole-setup.service
-Before=multi-user.target
+After=systemd-remount-fs.service systemd-vconsole-setup.service
+Before=multi-user.target systemd-firstboot.service
 
 [Install]
 WantedBy=first-boot-complete.target multi-user.target
 
 [Service]
 Type=oneshot
-ExecStart=xinit /usr/bin/aosc-os-oobe-cli
+ExecStart=/usr/bin/aosc-os-oobe cli
