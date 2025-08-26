@@ -2,12 +2,12 @@
 Description=AOSC OS Out-of-box Setup (GUI)
 ConditionFirstBoot=true
 ConditionPathExists=/var/lib/dpkg/info/kde-base.list
-After=modprobe@drm.service systemd-remount-fs.service systemd-firstboot.service
-Before=display-manager.service sddm.service multi-user.target
+After=modprobe@drm.service systemd-remount-fs.service
+Before=display-manager.service sddm.service multi-user.target systemd-firstboot.service
 
 [Install]
 WantedBy=first-boot-complete.target multi-user.target display-manager.service
 
 [Service]
 Type=oneshot
-ExecStart=xinit /usr/bin/aosc-os-oobe-gui.xinit
+ExecStart=/usr/bin/aosc-os-oobe gui
