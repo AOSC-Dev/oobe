@@ -1,0 +1,68 @@
+#!/bin/bash
+
+start_gui() {
+	# To make dbus and others happy.
+	export HOME=/tmp
+	export XDG_RUNTIME_DIR=/run
+	
+	# Setup the IME.
+	export GTK_IM_MODULE=fcitx
+	export QT_IM_MODULE=fcitx
+	export QT5_IM_MODULE=fcitx
+	export XMODIFIERS=@im=fcitx
+	
+	# Fix the cursor by changing it to a pointer.
+	xsetroot -cursor_name left_ptr
+	
+	# Start the window manager.
+	kwin_x11 --no-kactivities --lock &
+	sleep 1
+	
+	# IME
+	fcitx5 &
+	
+	# Disable sleep/suspend
+	xset s off &
+	
+	# Workaround for white-screen issues on some hardware
+	export WEBKIT_DISABLE_DMABUF_RENDERER=1
+	echo "Starting the GUI OOBE wizard ..." | logger
+	/usr/bin/aosc-os-oobe-gui
+	
+	# Clean up.
+	apt purge --yes aosc-os-oobe-gui && apt autoremove --yes
+	killall fcitx5 kwin_x11
+}
+
+start_cli() {
+	/usr/bin/aosc-os-oobe-cli
+	apt purge --yes aosc-os-oobe-cli && apt autoremove --yes
+}
+
+# Make dbus happy! Yay!
+systemd-machine-id-setup
+	
+if [ -z "$DISPLAY" ] ; then
+	case "$1" in
+		gui)
+			echo "Starting xinit ..." | logger
+			exec xinit "$0"
+			;;
+		cli)
+			start_cli
+			;;
+		*)
+			echo "Invalid usage." | logger
+			;;
+	esac
+else
+	start_gui
+fi
+
+# Apply the static hostname to the transient hostname.
+HOSTNAME="$(hostnamectl hostname --static)"
+export HOSTNAME
+hostnamectl hostname --transient "$HOSTNAME"
+	
+sync
+reboot -f
