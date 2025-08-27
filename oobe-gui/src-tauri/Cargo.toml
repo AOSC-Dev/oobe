@@ -18,15 +18,12 @@ vergen = "9.0.1"
 tauri = { version = "2.0.0", features = [] }
 serde = { version = "1.0.210", features = ["derive"] }
 serde_json = "1.0.128"
-nom = "8"
 tracing = "0.1.40"
 tracing-subscriber = { version = "0.3.18", features = ["env-filter"] }
 tauri-plugin-shell = "2.0.0"
 tauri-plugin-dialog = "2.0.0"
 tauri-plugin-cli = "2.0.0"
 anyhow = "1"
-install = { git = "https://github.com/AOSC-Dev/deploykit-backend", package = "install", rev = "bae5498d63207ac59d25614746a24347d91845aa" }
-sysinfo = "0.37"
 common = { path ="../../common" }
 
 [features]
