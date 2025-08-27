@@ -29,8 +29,13 @@ start_gui() {
 	echo "Starting the GUI OOBE wizard ..." | logger
 	/usr/bin/aosc-os-oobe-gui
 	
+	kdialog --msgbox \
+		"Please wait while the setup program performs one last cleanup operation.\nYour device will reboot automatically once it is finished." \
+		--title "AOSC OS Setup Wizard" &
+
 	# Clean up.
 	apt purge --yes aosc-os-oobe-gui && apt autoremove --yes
+
 	killall fcitx5 kwin_x11
 }
 
