@@ -177,7 +177,7 @@ fn main() -> anyhow::Result<()> {
 
     apply(OobeConfig {
         locale: Locale {
-            locale: locale.text.clone(),
+            locale: locale.locale.clone(),
         },
         user: username,
         pwd: password,

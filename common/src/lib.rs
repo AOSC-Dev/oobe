@@ -39,7 +39,7 @@ pub struct Timezone {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Lang {
     lang_english: String,
-    locale: String,
+    pub locale: String,
     lang: String,
     pub text: String,
     data: String,
