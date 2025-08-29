@@ -2,11 +2,13 @@
 Description=AOSC OS Out-of-box Setup (GUI)
 ConditionFirstBoot=true
 ConditionPathExists=/var/lib/dpkg/info/kde-base.list
+DefaultDependency=no
 After=modprobe@drm.service systemd-remount-fs.service
-Before=display-manager.service sddm.service multi-user.target systemd-firstboot.service
+Wants=first-boot-complete.target
+Before=display-manager.service systemd-firstboot.service first-boot-complete.target
 
 [Install]
-WantedBy=first-boot-complete.target multi-user.target display-manager.service
+WantedBy=first-boot-complete.target multi-user.target
 
 [Service]
 Type=oneshot

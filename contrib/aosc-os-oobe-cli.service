@@ -2,12 +2,18 @@
 Description=AOSC OS Out-of-box Setup (GUI)
 ConditionFirstBoot=true
 ConditionPathExists=!/var/lib/dpkg/info/kde-base.list
-After=systemd-remount-fs.service systemd-vconsole-setup.service
-Before=multi-user.target systemd-firstboot.service
+DefaultDependencies=no
+# Make sure the ConditionFirstBoot above evaluates into true
+Wants=first-boot-complete.target
+After=systemd-remount-fs.service
+# systemd-firstboot requires systemd-vconsole-setup, which disrupts seat0, thus disrupting kmscon.
+Before=systemd-vconsole-setup.service systemd-firstboot.service first-boot-complete.target sysinit.target
 
 [Install]
-WantedBy=first-boot-complete.target multi-user.target
+WantedBy=first-boot-complete.target
 
 [Service]
 Type=oneshot
-ExecStart=/usr/bin/aosc-os-oobe cli
+# Quit Plymouth before launching kmscon to avoid a system hang
+ExecStartPre=-/usr/bin/plymouth --quit --wait
+ExecStart=/usr/libexec/kmscon/kmscon-no-multiseat -l --debug --vt /dev/tty1 --no-switchvt -- /usr/bin/aosc-os-oobe cli
