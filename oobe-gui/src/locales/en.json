@@ -2,12 +2,13 @@
     "lang": "English (United States)",
     "welcome": {
         "title": "Welcome",
-        "p1": "In the following pages, the AOSC OS Installer will guide you through...",
-        "l1": "System variant selection",
-        "l2": "Disk partitioning",
-        "l3": "System configuration",
-        "p2": "The installation process should only take a few minutes, but will require more time on slower hardware.",
-        "sr-help": "Please note that Installer may use external programs that does not come with screen reader support, such as GParted, which is used for partitioning. You may want to seek assistance at those steps. Installer will notify you by announcing \"Please seek help before doing so.\""
+        "p1": "Thank you for choosing AOSC OS! In the following pages, the First-Boot Wizard will guide you through...",
+        "l1": "User account creation",
+        "l2": "Hostname configuration",
+        "l3": "Locale and timezone configuration",
+        "l4": "Swapfile (virtual memory) configuration",
+        "p2": "The first-boot configuration should take no more than a minute.",
+        "sr-help": "Please note that First-Boot Wizard may use external programs that does not come with screen reader support, such as GParted, which is used for partitioning. You may want to seek assistance at those steps. First-Boot Wizard will notify you by announcing \"Please seek help before doing so.\""
     },
     "desktop-or-install": {
         "title": "What would you like to do?",
@@ -25,7 +26,7 @@
     },
     "error": {
         "title": "Error",
-        "p1": "Installer has encountered an error.",
+        "p1": "First-Boot Wizard has encountered an error.",
         "retrying": "Attempting to retry..."
     },
     "install": {
@@ -59,10 +60,10 @@
     },
     "finish": {
         "title": "And... Done!",
-        "p1": "Installer has successfully installed AOSC OS on your device!",
-        "p2": "Please eject or unplug your installation media (usually a USB flash drive or a DVD) immediately after you click on \"Reboot.\" Installer will then restart your device and AOSC OS will take it from here.",
+        "p1": "First-Boot Wizard has successfully configured AOSC OS on your device!",
+        "p2": "AOSC OS will be ready to use as you click on \"Reboot.\"",
         "sr-help": "Please seek help before doing so, as this screen reader will stop guiding you after the installer exits. AOSC OS does not come with screen reader and other accessibility settings enabled by default, so you may need assistance setting up. Your assistant may find relevant documentations on our Wiki site.",
-        "p3": "Thank you for your time and for choosing AOSC OS!",
+        "p3": "Thank you again for your time and for choosing AOSC OS!",
         "finish": "Finish",
         "reboot": "Reboot"
     },
@@ -74,8 +75,8 @@
         "p1": "Would you like to create a swapfile? A swapfile could help when your system is under high memory load by offloading some of your program data to your storage device, thereby improving system stability.",
         "w1": "Running AOSC OS without a swapfile may cause instability at high memory load, resulting in possible application crashes and data loss!",
         "l1": "Your system has {size} of RAM.",
-        "l2": "Installer will create a swapfile of {size} on your AOSC OS system partition.",
-        "l3": "Installer recommends that you create a swapfile of {size} in size.",
+        "l2": "First-Boot Wizard will create a swapfile of {size} on your AOSC OS system partition.",
+        "l3": "First-Boot Wizard recommends that you create a swapfile of {size} in size.",
         "lo1": "Getting necessary information..."
     },
     "rescue": {
@@ -83,10 +84,10 @@
         "p1": "RescueKit is a rescue and restoration environment for AOSC OS. RescueKit provides tools for data backup and recovery, reinstallation, and more. Would you like to install RescueKit?",
         "yes": "Yes",
         "no": "No (Not Recommended)",
-        "l1": "Installer will create a RescueKit {size} partition within the AOSC OS system partition at {path}.",
+        "l1": "First-Boot Wizard will create a RescueKit {size} partition within the AOSC OS system partition at {path}.",
         "w1": "Without RescueKit, you will likely need to use an external live media (like LiveKit) to repair or reinstall AOSC OS.",
-        "bad1": "Installer has detected insufficient space on your storage device. RescueKit requires 5GiB of additional space in your system partition to install.",
-        "bad2": "Installer has detected a non-GPT partition scheme on your storage device. RescueKit is only available for devices with a GPT partition scheme."
+        "bad1": "First-Boot Wizard has detected insufficient space on your storage device. RescueKit requires 5GiB of additional space in your system partition to install.",
+        "bad2": "First-Boot Wizard has detected a non-GPT partition scheme on your storage device. RescueKit is only available for devices with a GPT partition scheme."
     },
     "network": {
         "title": "Network Connection",
@@ -110,15 +111,15 @@
         "k5": "({other_os}...)",
         "r1": "Analyzing your system...",
         "p1": "Please select your AOSC OS system partition. To make changes to your partitions, select the \"Manage partitions...\" button below.",
-        "p2": "It seems like you have an empty or new storage device. Installer can help you create a standard partition scheme based on your storage configuration, as you press \"Next,\" installer will partition your storage device based on the following specifications.",
+        "p2": "It seems like you have an empty or new storage device. First-Boot Wizard can help you create a standard partition scheme based on your storage configuration, as you press \"Next,\" installer will partition your storage device based on the following specifications.",
         "p3": "If you would like to partition the storage device yourself, please select the \"Manage partitions...\" button below.",
-        "p4": "Installer can help you create a standard partition scheme based on your storage configuration, as you press \"Next,\" installer will partition your storage device based on the following specifications.",
+        "p4": "First-Boot Wizard can help you create a standard partition scheme based on your storage configuration, as you press \"Next,\" installer will partition your storage device based on the following specifications.",
         "b1": "Manage partitions...",
         "b2": "Partition for me",
         "l1": "Create a {0} EFI System Partition.",
         "l2": "Create a {0} AOSC OS System Partition.",
         "e1": "The selected partition is too small. {0}GiB is required to install AOSC OS.",
-        "e2": "Installer does not support this filesystem. Please use ext4/xfs instead.",
+        "e2": "First-Boot Wizard does not support this filesystem. Please use ext4/xfs instead.",
         "e3": "The combination of {bootmode} and {table} is not supported.",
         "e4": "The unit does not have an EFI partition to continue the installation.",
         "e5": "This partitioned table type is not supported: {table}",
@@ -128,12 +129,12 @@
     },
     "esp": {
         "title": "ESP Partition",
-        "p1": "Installer detected multiple EFI System Partitions (ESPs) on your device, which are used to store critical boot data such as the bootloader. This partition and your AOSC OS system partition should generally be on the same storage device, making it easier to migrate and backup system data when the need arises.",
+        "p1": "First-Boot Wizard detected multiple EFI System Partitions (ESPs) on your device, which are used to store critical boot data such as the bootloader. This partition and your AOSC OS system partition should generally be on the same storage device, making it easier to migrate and backup system data when the need arises.",
         "p2": "Should you decide to specify an EFI System Partition on another storage device, do think twice: if that drive is subsequently replaced, you will need to reinstall the bootloader for AOSC OS."
     },
     "mirror": {
         "title": "Mirror",
-        "p1": "Installer will now detect the fastest mirror to download AOSC OS from. If you would like to manual select a mirror, press \"Customize...\" below.",
+        "p1": "First-Boot Wizard will now detect the fastest mirror to download AOSC OS from. If you would like to manual select a mirror, press \"Customize...\" below.",
         "b1": "Customize...",
         "p2": "Listed below are all available mirrors to download AOSC OS from. You may select based on the mirrors' geographical location. Alternatively, you may benchmark them using the \"Benchmark...\" button.",
         "b2": "Benchmark...",
@@ -155,7 +156,7 @@
     },
     "confirm": {
         "title": "Pre-Flight Check",
-        "p1": "Installer will perform the following operations:",
+        "p1": "First-Boot Wizard will perform the following operations:",
         "l1": "{path} will be {explain}.",
         "l1-1": "erased and formatted as {format}",
         "l2": "A {size} partition will be created for RescueKit.",
@@ -166,7 +167,7 @@
         "l7": "AOSC OS will use {0}.",
         "l7-1": "UTC as local time",
         "l7-2": "RTC as local time",
-        "w1": "By pressing \"Next,\" Installer will begin downloading, installing, and configuring AOSC OS on your device. If anything looks off, please use the \"Previous\" button to return to the previous configuration pages."
+        "w1": "By pressing \"Next,\" First-Boot Wizard will finalize AOSC OS configurations on your device. If anything looks off, please use the \"Previous\" button to return to the previous configuration pages."
     },
     "locale": {
         "title": "Locale & Time",
@@ -192,12 +193,12 @@
     },
     "driver": {
         "title": "NVIDIA",
-        "p1": "Installer has detected a graphics card on your device that is supported by NVIDIA's official Linux driver. Installing this driver may enhance overall system stability, power efficiency, and graphics performance. This driver is considered proprietary software and carries additional licensing terms in the {0}.",
+        "p1": "First-Boot Wizard has detected a graphics card on your device that is supported by NVIDIA's official Linux driver. Installing this driver may enhance overall system stability, power efficiency, and graphics performance. This driver is considered proprietary software and carries additional licensing terms in the {0}.",
         "p1-1": "License For Customer Use of NVIDIA GeForce Software",
         "eula_link": "https://www.nvidia.com/en-us/drivers/geforce-license/",
         "p2": "Would you like to install a system release with official NVIDIA drivers preinstalled?",
-        "l1": "Installer will download and install NVIDIA's official Linux driver. By proceeding with this option, you agree to the aforementioned licensing terms.",
-        "l2": "Installer will proceed to install AOSC OS preinstalled with the open source Nouveau graphical stack. When used with newer NVIDIA graphics cards, you may encounter issues such as display artifacts, freezes, startup failures, and lowered performance."
+        "l1": "First-Boot Wizard will download and install NVIDIA's official Linux driver. By proceeding with this option, you agree to the aforementioned licensing terms.",
+        "l2": "First-Boot Wizard will proceed to install AOSC OS preinstalled with the open source Nouveau graphical stack. When used with newer NVIDIA graphics cards, you may encounter issues such as display artifacts, freezes, startup failures, and lowered performance."
     },
     "slides": {
         "t1": "Made with Love",
@@ -232,9 +233,9 @@
     "select": "Select...",
     "search": "Start typing to search...",
     "empty": "No result",
-    "sys-title": "AOSC OS Installer",
+    "sys-title": "First-Boot Wizard",
     "error1": "Internal Error: Inter-process communication was not successful: {msg}.",
     "error2": "Your system does not have the minimum required disk space available. Required: {r_size}, found: {f_size}.",
-    "error3": "Dear time traveller, unfortunately, the AOSC OS installer at this timeline only supports up to 8PiB of RAM. So please try limiting the RAM available to this system if possible.",
+    "error3": "Dear time traveller, unfortunately, the First-Boot Wizard at this timeline only supports up to 8PiB of RAM. So please try limiting the RAM available to this system if possible.",
     "offline-media": "Offline Media"
 }
