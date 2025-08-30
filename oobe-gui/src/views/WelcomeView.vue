@@ -11,6 +11,7 @@ import DKBody from '../components/DKBody.vue';
       <li>{{ $t("welcome.l1") }}</li>
       <li>{{ $t("welcome.l2") }}</li>
       <li>{{ $t("welcome.l3") }}</li>
+      <li>{{ $t("welcome.l4") }}</li>
     </ul>
     <p>{{ $t("welcome.p2") }}</p>
   </DKBody>
