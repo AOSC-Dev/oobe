@@ -8,7 +8,8 @@ use common::{
 };
 use i18n_embed::DesktopLanguageRequester;
 use inquire::{
-    Confirm, Password, PasswordDisplayMode, Select, Text, required, validator::Validation,
+    Confirm, CustomType, Password, PasswordDisplayMode, Select, Text, required,
+    validator::Validation,
 };
 
 use crate::i18n::LANGUAGE_LOADER;
@@ -174,6 +175,13 @@ fn main() -> anyhow::Result<()> {
         .prompt()?;
 
     let recommend_swap_file_size = get_recommend_swap_size()?;
+    let swap_size = CustomType::<f64>::new(&fl!("swap-size"))
+        .with_default(
+            format!("{:.2}", recommend_swap_file_size / 1024.0 / 1024.0 / 1024.0)
+                .parse::<f64>()
+                .unwrap(),
+        )
+        .prompt()?;
 
     apply(OobeConfig {
         locale: Locale {
@@ -187,9 +195,7 @@ fn main() -> anyhow::Result<()> {
         timezone: common::Timezone {
             data: timezone.to_string(),
         },
-        swapfile: SwapFile {
-            size: recommend_swap_file_size,
-        },
+        swapfile: SwapFile { size: swap_size },
     })?;
 
     Ok(())
