@@ -3267,15 +3267,13 @@ dependencies = [
 [[package]]
 name = "inquire"
 version = "0.7.5"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "0fddf93031af70e75410a2511ec04d49e758ed2f26dad3404a934e0fb45cc12a"
+source = "git+https://github.com/AOSC-Dev/oma-inquire?rev=d81e6f47599bd566451ecf95b73ce88271761c2f#d81e6f47599bd566451ecf95b73ce88271761c2f"
 dependencies = [
  "bitflags 2.9.3",
  "crossterm",
  "dyn-clone",
  "fuzzy-matcher",
  "fxhash",
- "newline-converter",
  "once_cell",
  "unicode-segmentation",
  "unicode-width",
@@ -3887,15 +3885,6 @@ name = "new_debug_unreachable"
 version = "1.0.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "650eef8c711430f1a879fdd01d4745a7deea475becfb90269c06775983bbf086"
-
-[[package]]
-name = "newline-converter"
-version = "0.3.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "47b6b097ecb1cbfed438542d16e84fd7ad9b0c76c8a65b7f9039212a3d14dc7f"
-dependencies = [
- "unicode-segmentation",
-]
 
 [[package]]
 name = "nix"

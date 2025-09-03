@@ -4,7 +4,7 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
-inquire = "0.7"
+inquire = { git = "https://github.com/AOSC-Dev/oma-inquire", rev = "d81e6f47599bd566451ecf95b73ce88271761c2f" }
 common = { path = "../common" }
 anyhow = "1"
 
