@@ -16,6 +16,61 @@ use unic_langid::LanguageIdentifier;
 
 use crate::i18n::LANGUAGE_LOADER;
 
+fn welcome_banner() -> anyhow::Result<()> {
+    fn cell_width(c: char) -> usize {
+        return match c {
+            // See Wikipedia for a listing of ranges.
+            '\t' => 8,
+            '\u{0000}'..'\u{02af}' => 1,
+            // Treat characters in General Punctuation as half-width.
+            '\u{2000}'..'\u{206f}' => 1,
+            '\u{ff61}'..'\u{ffdc}' => 1,
+            '\u{ffe8}'..'\u{ffef}' => 1,
+            _ => 2
+        }
+    }
+    const BOX_CHARS: &[char] = &['═', '║', '╔', '╗', '╚', '╝'];
+    const WIDTH: usize = 80;
+    const TEXT_WIDTH: usize = WIDTH - 4;
+    // static BOX_CHARS: &[char] = &['─', '│', '┌', '┐', '└', '┘'];
+    let text = fl!("welcome-banner");
+    let mut rendered = format!("{}{}{}\n",
+        BOX_CHARS[2],
+        vec![BOX_CHARS[0]; WIDTH - 2].into_iter().collect::<String>(),
+        BOX_CHARS[3]
+    );
+    // Make every line less than TEXT_WIDTH - 4 cells
+    // Screw it, I don't care if it breaks words.
+    for line in text.lines() {
+        let mut wrapped = String::new();
+        let mut count = 0;
+        for c in line.chars() {
+            let w = cell_width(c);
+            if count + w >TEXT_WIDTH {
+                wrapped.push('\n');
+                count = w;
+                wrapped.push(c);
+                continue;
+            }
+            count += w;
+            wrapped.push(c);
+        }
+        wrapped.push_str(&vec![' '; TEXT_WIDTH - count].into_iter().collect::<String>());
+        for line in wrapped.lines() {
+            rendered.push_str(&format!("{} {} {}\n", BOX_CHARS[1], line, BOX_CHARS[1]));
+        }
+    }
+    rendered.push_str(&format!("{}{}{}",
+        BOX_CHARS[4],
+        vec![BOX_CHARS[0]; WIDTH - 2].into_iter().collect::<String>(),
+        BOX_CHARS[5]
+    ));
+
+    println!("{}", rendered.on_blue().bright_white());
+
+    Ok(())
+}
+
 // https://manpages.ubuntu.com/manpages/oracular/en/man5/hostname.5.html
 fn validate_hostname(input: &str) -> std::result::Result<Validation, Box<dyn Error + Send + Sync>> {
     if input.len() > 64 {
@@ -148,6 +203,8 @@ fn main() -> anyhow::Result<()> {
         LanguageIdentifier::from_bytes(b"en_US").unwrap()
     };
     localizer.select(&[newlang])?;
+
+    welcome_banner()?;
 
     let fullname = Text::new(&fl!("fullname"))
         .with_validator(vaildation_fullname)

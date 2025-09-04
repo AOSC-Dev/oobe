@@ -62,3 +62,13 @@ yn-confirm-required = Confirmation required: please type 'Y' to confirm, 'N' to 
 installation-aborted = Installation has been aborted.
 partition-unformatted = { $path } unformatted, will format this partition to ext4 filesystem.
 system-username = { $username } is a system reserved user name.
+welcome-banner =
+    Thank you for choosing AOSC OS! In the following steps, the First-Boot
+    Wizard will guide you through...
+
+    • User account creation
+    • Hostname configuration
+    • Locale and timezone configuration
+    • Swapfile (virtual memory) configuration
+
+    The first-boot configuration should take no more than a minute.
