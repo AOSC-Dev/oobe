@@ -11,6 +11,8 @@ use inquire::{
     Confirm, CustomType, Password, PasswordDisplayMode, Select, Text, required,
     validator::Validation,
 };
+use owo_colors::OwoColorize;
+use unic_langid::LanguageIdentifier;
 
 use crate::i18n::LANGUAGE_LOADER;
 
@@ -121,11 +123,31 @@ fn main() -> anyhow::Result<()> {
     if let Err(error) = localizer.select(&requested_languages) {
         eprintln!("Error while loading languages for library_fluent {error}");
     }
+    // Welcome text
+    println!("{}", "AOSC OS Setup Wizard - Welcome to AOSC OS!".bright_white());
+    println!("{}", "Please select your language / 选择语言:".bright_white());
 
     // Windows Terminal doesn't support bidirectional (BiDi) text, and renders the isolate characters incorrectly.
     // This is a temporary workaround for https://github.com/microsoft/terminal/issues/16574
     // TODO: this might break BiDi text, though we don't support any writing system depends on that.
     LANGUAGE_LOADER.set_use_isolating(false);
+
+    // Ask for language selection first
+    let langs = langs()?;
+    let locale = Select::new(
+        &fl!("locale"),
+        langs.iter().map(|x| x.text.clone()).collect::<Vec<_>>(),
+         )
+        .prompt()?;
+    let locale = langs.iter().find(|x| x.text == locale).unwrap();
+    let newlang = &locale.locale.split('.').next().unwrap();
+    let newlang = if let Ok(l) = LanguageIdentifier::from_bytes(newlang.as_bytes()) {
+        l
+    } else {
+        // fallback
+        LanguageIdentifier::from_bytes(b"en_US").unwrap()
+    };
+    localizer.select(&[newlang])?;
 
     let fullname = Text::new(&fl!("fullname"))
         .with_validator(vaildation_fullname)
@@ -154,16 +176,6 @@ fn main() -> anyhow::Result<()> {
     let timezones = list_zoneinfo()?;
 
     let timezone = Select::new(&fl!("timezone"), timezones).prompt()?;
-
-    let langs = langs()?;
-
-    let locale = Select::new(
-        &fl!("locale"),
-        langs.iter().map(|x| x.text.clone()).collect::<Vec<_>>(),
-    )
-    .prompt()?;
-
-    let locale = langs.iter().find(|x| x.text == locale).unwrap();
 
     let hostname = Text::new(&fl!("hostname"))
         .with_validator(required!(fl!("hostname-required")))
