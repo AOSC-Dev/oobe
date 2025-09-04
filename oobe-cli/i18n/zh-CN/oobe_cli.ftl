@@ -63,3 +63,12 @@ hostname-illegal-starts-with = 指定的主机名包含无效字符：{ $c }
 hostname-illegal-double-dot = 指定的主机名包含不允许存在的字符组合：两个或更多连续的点 (`..')。
 partition-unformatted = 分区 { $path } 未格式化，安装程序将把该分区格式化为 ext4 文件系统。
 system-username = { $username } 为系统预留用户名。
+welcome-banner =
+    感谢您选用 AOSC OS！在下面几个步骤中，初次使用向导将助您配置：
+
+    • 用户账户
+    • 主机名
+    • 语言、时区及地区设置
+    • 虚拟内存文件 (swapfile)
+
+    本配置流程仅需不到一分钟时间即可完成。
