@@ -12,4 +12,4 @@ WantedBy=first-boot-complete.target multi-user.target
 
 [Service]
 Type=oneshot
-ExecStart=/usr/bin/aosc-os-oobe gui
+ExecStart=/usr/bin/aosc-os-oobe-gui-launcher

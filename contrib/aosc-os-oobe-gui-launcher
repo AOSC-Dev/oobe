@@ -1,0 +1,60 @@
+#!/bin/bash
+
+if [ -z "$DISPLAY" ] ; then
+	echo "Launching xinit"
+	exec xinit "$@"
+fi
+
+# To make dbus and others happy.
+export HOME=/tmp
+export XDG_RUNTIME_DIR=/run
+
+# Setup the IME.
+export GTK_IM_MODULE=fcitx
+export QT_IM_MODULE=fcitx
+export QT5_IM_MODULE=fcitx
+export XMODIFIERS=@im=fcitx
+
+# Fix the cursor by changing it to a pointer.
+xsetroot -cursor_name left_ptr
+
+# Start the window manager.
+kwin_x11 --no-kactivities --lock &
+sleep 1
+
+# IME
+fcitx5 &
+
+# Disable sleep/suspend
+xset s off &
+
+# Workaround for white-screen issues on some hardware
+export WEBKIT_DISABLE_DMABUF_RENDERER=1
+echo "Starting the GUI OOBE wizard ..." | logger
+/usr/libexec/aosc-os-oobe/aosc-os-oobe-gui
+
+source /etc/locale.conf
+export LANG
+
+export TEXTDOMAIN=aosc-os-oobe-launcher
+
+TITLE=$"AOSC OS First Boot Setup Wizard"
+PROMPT=$"Please wait while the setup program performs one last cleanup operation.
+Your device will reboot automatically once it is finished."
+
+kdialog --msgbox \
+	"$PROMPT" \
+	--title "$TITLE" &
+
+# Clean up.
+apt purge --yes aosc-os-oobe-gui && apt autoremove --yes
+
+killall fcitx5 kwin_x11
+
+# Apply the static hostname to the transient hostname.
+HOSTNAME="$(hostnamectl hostname --static)"
+export HOSTNAME
+hostnamectl hostname --transient "$HOSTNAME"
+	
+sync
+reboot -f

@@ -16,4 +16,4 @@ WantedBy=first-boot-complete.target
 Type=oneshot
 # Quit Plymouth before launching kmscon to avoid a system hang
 ExecStartPre=-/usr/bin/plymouth --quit --wait
-ExecStart=/usr/libexec/kmscon/kmscon-no-multiseat -l --debug --vt /dev/tty1 --no-switchvt -- /usr/bin/aosc-os-oobe cli
+ExecStart=/usr/libexec/kmscon/kmscon-no-multiseat -l --debug --vt /dev/tty1 --no-switchvt -- /usr/bin/aosc-os-oobe-cli-launcher
