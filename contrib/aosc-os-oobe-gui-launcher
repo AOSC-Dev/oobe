@@ -2,7 +2,7 @@
 
 if [ -z "$DISPLAY" ] ; then
 	echo "Launching xinit"
-	exec xinit "$@"
+	exec xinit "$0"
 fi
 
 # To make dbus and others happy.
