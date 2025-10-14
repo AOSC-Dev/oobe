@@ -1,7 +1,12 @@
 #!/bin/bash
 
 if [ -z "$DISPLAY" ] ; then
-	echo "Launching xinit"
+	# Quit Plymouth to transfer the screen to X11.
+	echo "Asking Plymouth to quit ..."
+	plymouth quit --wait
+	echo "Waiting for udev ..."
+	udevadm settle
+	echo "Launching xinit ..."
 	exec xinit "$0"
 fi
 
