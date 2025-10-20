@@ -4,9 +4,12 @@ if [ -z "$DISPLAY" ] ; then
 	# Quit Plymouth to transfer the screen to X11.
 	echo "Asking Plymouth to quit ..."
 	plymouth quit --wait
-	echo "Waiting for udev ..."
+	# DRM drivers must be loaded in order to start the graphical
+	# environment. modprobe@drm just loads the DRM framework. The rest
+	# of the graphics stack must be loaded either manually or by udev.
+	echo "Waiting for udev to complete device probing and setup ..."
 	udevadm settle
-	echo "Launching xinit ..."
+	echo "Launching the graphical environment ..."
 	exec xinit "$0"
 fi
 
@@ -25,7 +28,9 @@ xsetroot -cursor_name left_ptr
 
 # Start the window manager.
 kwin_x11 --no-kactivities --lock &
-sleep 1
+# FIXME: find an appropriate way to do this.
+# Wait for KWin to fully start, otherwise the OOBE window won't be centered.
+sleep 5
 
 # IME
 fcitx5 &
