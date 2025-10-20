@@ -13,24 +13,16 @@ jobs:
       - name: Use Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 18
+          node-version: 22
       - name: Install dependencies
-        run: yarn 
+        run: cd oobe-gui && yarn
       - name: Build
         run: cd oobe-gui && yarn vite build && tar -cvf dist.tar ./dist && xz -T0 dist.tar
-      # - name: Calculate tag name
-      #   id: vars
-      #   run: |
-      #     if [[ $GITHUB_REF == refs/tags/v* ]]; then
-      #       name=${GITHUB_REF:10}
-      #     fi
-      #     echo ::set-output name=val::$name
-      #     echo tag=$name >> $GITHUB_OUTPUT
       - name: Release
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: dist.tar.xz
+          file: oobe-gui/dist.tar.xz
           file_glob: true
           tag: ${{ github.ref }}
           overwrite: true
