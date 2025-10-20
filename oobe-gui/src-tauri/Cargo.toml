@@ -1,6 +1,6 @@
 [package]
 name = "oobe-gui"
-version = "0.1.0"
+version = "0.1.1"
 description = "AOSC OS oobe wizard"
 authors = ["you"]
 license = "MIT"
