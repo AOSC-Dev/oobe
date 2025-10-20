@@ -16,7 +16,8 @@ PROMPT=$"Please wait while the setup program performs one last cleanup operation
 Your device will reboot automatically once it is finished."
 # Clean up
 echo -e "$PROMPT"
-apt purge --yes aosc-os-oobe-cli && apt autoremove --yes
+oma --no-progress --no-bell purge --yes aosc-os-oobe-cli
+oma --no-progress --no-bell autoremove --yes
 
 # Apply the static hostname to the transient hostname.
 HOSTNAME="$(hostnamectl hostname --static)"
