@@ -17,7 +17,7 @@ jobs:
       - name: Install dependencies
         run: yarn 
       - name: Build
-        run: yarn vite build && tar -cvf dist.tar ./dist && xz -T0 dist.tar
+        run: cd oobe-gui && yarn vite build && tar -cvf dist.tar ./dist && xz -T0 dist.tar
       # - name: Calculate tag name
       #   id: vars
       #   run: |
