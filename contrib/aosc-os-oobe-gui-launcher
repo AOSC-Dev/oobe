@@ -57,7 +57,7 @@ kdialog --msgbox \
 	--title "$TITLE" &
 
 # Clean up.
-oma --no-progress --no-bell purge --yes aosc-os-oobe-cli
+oma --no-progress --no-bell purge --yes aosc-os-oobe-gui
 oma --no-progress --no-bell autoremove --yes
 
 killall fcitx5 kwin_x11
