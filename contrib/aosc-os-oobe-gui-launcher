@@ -33,7 +33,7 @@ export XMODIFIERS=@im=fcitx
 xsetroot -cursor_name left_ptr
 
 # Try to figure out the DPI ...
-dimensions=($(xrandr --current -q | grep -Po -e '\d+x\d+.*\*\+' | grep -Po '^\d+x\d+'))
+dimensions=($(xrandr --current -q | grep -Po -e '\d+x\d+.*\*' | grep -Po '^\d+x\d+'))
 # We just take the first.
 dimension="${dimensions[0]}"
 scr_x="${dimension%%x*}"
@@ -49,12 +49,23 @@ if [ "$scr_x" -gt 768 ] && [ "$scr_y" -gt 768 ] ; then
 		scr_ref="$scr_y"
 	fi
 	if [ "$(( scr_ref / 2304 ))" -gt 0 ] ; then
+		# Webkit2gtk does not use Xft.dpi. It requires additional
+		# environment variables to achieve scaling ...
+		export GDK_SCALE=3
 		dpi=288
 	elif [ "$(( scr_ref / 1536 ))" -gt 0 ] ; then
+		export GDK_SCALE=2
 		dpi=192
 	elif [ "$(( scr_ref / 1152 ))" -gt 0 ] ; then
+		# It does not support fractional scaling.
+		# Use GDK_DPI_SCALE to scale up texts.
+		# GUI wizard should be started fullscreen.
+		# Layout is trashed if DPI is scaled, since the window
+		# dimension does not change.
+		export GDK_DPI_SCALE=1.5
 		dpi=144
 	elif [ "$(( scr_ref / 960 ))" -gt 0 ] ; then
+		export GDK_DPI_SCALE=1.25
 		dpi=120
 	else
 		dpi=96
