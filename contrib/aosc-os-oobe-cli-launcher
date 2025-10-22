@@ -1,6 +1,9 @@
 #!/bin/bash
 
-# Make dbus happy! Yay!
+# Set up the unique identifier at /etc/machine-id. D-Bus and pretty much
+# everything else requires this.
+# At the time of execution of this script, the root filesystem or at least
+# where /etc resides should be read-write.
 systemd-machine-id-setup
 clear
 
@@ -16,6 +19,8 @@ PROMPT=$"Please wait while the setup program performs one last cleanup operation
 Your device will reboot automatically once it is finished."
 # Clean up
 echo -e "$PROMPT"
+
+# Remove itself.
 oma --no-progress --no-bell purge --yes aosc-os-oobe-cli
 oma --no-progress --no-bell autoremove --yes
 
@@ -23,6 +28,9 @@ oma --no-progress --no-bell autoremove --yes
 HOSTNAME="$(hostnamectl hostname --static)"
 export HOSTNAME
 hostnamectl hostname --transient "$HOSTNAME"
+
+# Apply the transient machine ID.
+systemd-machine-id-setup --commit
 
 sync
 reboot -f
