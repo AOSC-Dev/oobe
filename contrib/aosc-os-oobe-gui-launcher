@@ -1,6 +1,12 @@
 #!/bin/bash
 
 if [ -z "$DISPLAY" ] ; then
+	# Set up the unique identifier at /etc/machine-id. D-Bus and pretty
+	# much everything else requires this.
+	# At the time of execution of this script, the root filesystem or
+	# at least where /etc resides should be read-write.
+	echo "Setting up machine-id ..."
+	systemd-machine-id-setup
 	# Quit Plymouth to transfer the screen to X11.
 	echo "Asking Plymouth to quit ..."
 	plymouth quit --wait
@@ -66,6 +72,14 @@ killall fcitx5 kwin_x11
 HOSTNAME="$(hostnamectl hostname --static)"
 export HOSTNAME
 hostnamectl hostname --transient "$HOSTNAME"
-	
+
+# If the root filesystem is mounted read-only when starting up, systemd
+# will setup a transient machine ID at either /run or /tmp, and the file
+# will bind-mounted to /etc.
+# Before we restart, this file must be committed to the disk, so the
+# transient ID will persist.
+# Again, /etc should be writable at the execution of this script.
+systemd-machine-id-setup --commit
+
 sync
 reboot -f
