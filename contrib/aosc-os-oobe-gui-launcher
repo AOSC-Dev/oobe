@@ -32,6 +32,37 @@ export XMODIFIERS=@im=fcitx
 # Fix the cursor by changing it to a pointer.
 xsetroot -cursor_name left_ptr
 
+# Try to figure out the DPI ...
+dimensions=($(xrandr --current -q | grep -Po -e '\d+x\d+.*\*\+' | grep -Po '^\d+x\d+'))
+# We just take the first.
+dimension="${dimensions[0]}"
+scr_x="${dimension%%x*}"
+scr_y="${dimension##*x}"
+# The OOBE wizard is designated to run at 1024x768.
+# Use 768 as the base of the vertical resolution.
+if [ "$scr_x" -gt 768 ] && [ "$scr_y" -gt 768 ] ; then
+	# We expect a horizontal display.
+	# Use the vertical resolution as ref.
+	if [ "$scr_y" -gt "$scr_x" ] ; then
+		scr_ref="$scr_x"
+	else
+		scr_ref="$scr_y"
+	fi
+	if [ "$(( scr_ref / 2304 ))" -gt 0 ] ; then
+		dpi=288
+	elif [ "$(( scr_ref / 1536 ))" -gt 0 ] ; then
+		dpi=192
+	elif [ "$(( scr_ref / 1152 ))" -gt 0 ] ; then
+		dpi=144
+	elif [ "$(( scr_ref / 960 ))" -gt 0 ] ; then
+		dpi=120
+	else
+		dpi=96
+	fi
+	echo "DPI is set to $dpi for $dimension"
+	xrandr --dpi "$dpi"
+fi
+
 # Start the window manager.
 kwin_x11 --no-kactivities --lock &
 # FIXME: find an appropriate way to do this.
