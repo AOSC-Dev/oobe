@@ -21,8 +21,8 @@ Your device will reboot automatically once it is finished."
 echo -e "$PROMPT"
 
 # Remove itself.
-oma --no-progress --no-bell purge --yes aosc-os-oobe-cli
-oma --no-progress --no-bell autoremove --yes
+oma --no-check-dbus --no-progress --no-bell purge --yes aosc-os-oobe-cli
+oma --no-check-dbus --no-progress --no-bell autoremove --yes
 
 # Apply the static hostname to the transient hostname.
 HOSTNAME="$(hostnamectl hostname --static)"
