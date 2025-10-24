@@ -94,16 +94,6 @@ echo "Starting the GUI OOBE wizard ..." | logger
 source /etc/locale.conf
 export LANG
 
-export TEXTDOMAIN=aosc-os-oobe-launcher
-
-TITLE=$"AOSC OS First Boot Setup Wizard"
-PROMPT=$"Please wait while the setup program performs one last cleanup operation.
-Your device will reboot automatically once it is finished."
-
-kdialog --msgbox \
-	"$PROMPT" \
-	--title "$TITLE" &
-
 # Clean up.
 oma --no-check-dbus --no-progress --no-bell purge --yes aosc-os-oobe-gui
 oma --no-check-dbus --no-progress --no-bell autoremove --yes
