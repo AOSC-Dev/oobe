@@ -23,6 +23,8 @@ fi
 export HOME=/tmp
 export XDG_RUNTIME_DIR=/run
 
+eval $(dbus-launch)
+
 # Setup the IME.
 export GTK_IM_MODULE=fcitx
 export QT_IM_MODULE=fcitx
