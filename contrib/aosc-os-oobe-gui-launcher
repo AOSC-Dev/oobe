@@ -23,6 +23,8 @@ fi
 export HOME=/tmp
 export XDG_RUNTIME_DIR=/run
 
+eval $(dbus-launch)
+
 # Setup the IME.
 export GTK_IM_MODULE=fcitx
 export QT_IM_MODULE=fcitx
@@ -81,7 +83,8 @@ kwin_x11 --no-kactivities --lock &
 sleep 5
 
 # IME
-fcitx5 &
+# FIXME: fcitx5 is not configred properly if LANG is not zh_CN.
+env LANG=zh_CN.UTF-8 fcitx5 &
 
 # Disable sleep/suspend
 xset s off &
