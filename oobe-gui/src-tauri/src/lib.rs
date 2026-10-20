@@ -1,20 +1,20 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
+use common::USERNAME_BLOCKLIST;
 use common::apply;
 use common::parser::ZoneInfo;
-use common::USERNAME_BLOCKLIST;
 use serde::Serialize;
 use std::env;
 use std::io;
 use std::process::Command;
 use tracing::info;
 use tracing::level_filters::LevelFilter;
+use tracing_subscriber::EnvFilter;
+use tracing_subscriber::Layer;
 use tracing_subscriber::fmt;
 use tracing_subscriber::layer::SubscriberExt;
 use tracing_subscriber::util::SubscriberInitExt;
-use tracing_subscriber::EnvFilter;
-use tracing_subscriber::Layer;
 
 const DEFAULT_LANG: &str = "en_US.UTF-8";
 

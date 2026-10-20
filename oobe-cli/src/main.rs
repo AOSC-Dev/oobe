@@ -26,17 +26,20 @@ fn welcome_banner() -> anyhow::Result<()> {
             '\u{2000}'..'\u{206f}' => 1,
             '\u{ff61}'..'\u{ffdc}' => 1,
             '\u{ffe8}'..'\u{ffef}' => 1,
-            _ => 2
-        }
+            _ => 2,
+        };
     }
     const BOX_CHARS: &[char] = &['═', '║', '╔', '╗', '╚', '╝'];
     const WIDTH: usize = 80;
     const TEXT_WIDTH: usize = WIDTH - 4;
     // static BOX_CHARS: &[char] = &['─', '│', '┌', '┐', '└', '┘'];
     let text = fl!("welcome-banner");
-    let mut rendered = format!("{}{}{}\n",
+    let mut rendered = format!(
+        "{}{}{}\n",
         BOX_CHARS[2],
-        vec![BOX_CHARS[0]; WIDTH - 2].into_iter().collect::<String>(),
+        vec![BOX_CHARS[0]; WIDTH - 2]
+            .into_iter()
+            .collect::<String>(),
         BOX_CHARS[3]
     );
     // Make every line less than TEXT_WIDTH - 4 cells
@@ -46,7 +49,7 @@ fn welcome_banner() -> anyhow::Result<()> {
         let mut count = 0;
         for c in line.chars() {
             let w = cell_width(c);
-            if count + w >TEXT_WIDTH {
+            if count + w > TEXT_WIDTH {
                 wrapped.push('\n');
                 count = w;
                 wrapped.push(c);
@@ -55,14 +58,21 @@ fn welcome_banner() -> anyhow::Result<()> {
             count += w;
             wrapped.push(c);
         }
-        wrapped.push_str(&vec![' '; TEXT_WIDTH - count].into_iter().collect::<String>());
+        wrapped.push_str(
+            &vec![' '; TEXT_WIDTH - count]
+                .into_iter()
+                .collect::<String>(),
+        );
         for line in wrapped.lines() {
             rendered.push_str(&format!("{} {} {}\n", BOX_CHARS[1], line, BOX_CHARS[1]));
         }
     }
-    rendered.push_str(&format!("{}{}{}",
+    rendered.push_str(&format!(
+        "{}{}{}",
         BOX_CHARS[4],
-        vec![BOX_CHARS[0]; WIDTH - 2].into_iter().collect::<String>(),
+        vec![BOX_CHARS[0]; WIDTH - 2]
+            .into_iter()
+            .collect::<String>(),
         BOX_CHARS[5]
     ));
 
@@ -179,8 +189,14 @@ fn main() -> anyhow::Result<()> {
         eprintln!("Error while loading languages for library_fluent {error}");
     }
     // Welcome text
-    println!("{}", "AOSC OS Setup Wizard - Welcome to AOSC OS!".bright_white());
-    println!("{}", "Please select your language / 选择语言:".bright_white());
+    println!(
+        "{}",
+        "AOSC OS Setup Wizard - Welcome to AOSC OS!".bright_white()
+    );
+    println!(
+        "{}",
+        "Please select your language / 选择语言:".bright_white()
+    );
 
     // Windows Terminal doesn't support bidirectional (BiDi) text, and renders the isolate characters incorrectly.
     // This is a temporary workaround for https://github.com/microsoft/terminal/issues/16574
@@ -192,8 +208,8 @@ fn main() -> anyhow::Result<()> {
     let locale = Select::new(
         &fl!("locale"),
         langs.iter().map(|x| x.text.clone()).collect::<Vec<_>>(),
-         )
-        .prompt()?;
+    )
+    .prompt()?;
     let locale = langs.iter().find(|x| x.text == locale).unwrap();
     let newlang = &locale.locale.split('.').next().unwrap();
     let newlang = if let Ok(l) = LanguageIdentifier::from_bytes(newlang.as_bytes()) {
