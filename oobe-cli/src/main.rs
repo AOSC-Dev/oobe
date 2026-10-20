@@ -18,7 +18,7 @@ use crate::i18n::LANGUAGE_LOADER;
 
 fn welcome_banner() -> anyhow::Result<()> {
     fn cell_width(c: char) -> usize {
-        return match c {
+        match c {
             // See Wikipedia for a listing of ranges.
             '\t' => 8,
             '\u{0000}'..'\u{02af}' => 1,
@@ -27,7 +27,7 @@ fn welcome_banner() -> anyhow::Result<()> {
             '\u{ff61}'..'\u{ffdc}' => 1,
             '\u{ffe8}'..'\u{ffef}' => 1,
             _ => 2,
-        };
+        }
     }
     const BOX_CHARS: &[char] = &['═', '║', '╔', '╗', '╚', '╝'];
     const WIDTH: usize = 80;
