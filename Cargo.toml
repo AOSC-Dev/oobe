@@ -1,3 +1,6 @@
 [workspace]
 resolver = "3"
 members = ["oobe-gui/src-tauri", "oobe-cli", "common"]
+
+[patch.crates-io]
+libparted-sys = { git = "https://github.com/cholcombe973/libparted-sys", rev = "2ff397e128933b0f2730a18087fc5b55b581340d" }
