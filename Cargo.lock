@@ -641,7 +641,7 @@ dependencies = [
 
 [[package]]
 name = "common"
-version = "0.1.4"
+version = "0.1.5"
 dependencies = [
  "anyhow",
  "fs4",
@@ -4172,7 +4172,7 @@ checksum = "384b8ab6d37215f3c5301a95a4accb5d64aa607f1fcb26a11b5303878451b4fe"
 
 [[package]]
 name = "oobe-cli"
-version = "0.1.4"
+version = "0.1.5"
 dependencies = [
  "anyhow",
  "common",
@@ -4186,7 +4186,7 @@ dependencies = [
 
 [[package]]
 name = "oobe-gui"
-version = "0.1.4"
+version = "0.1.5"
 dependencies = [
  "anyhow",
  "common",
