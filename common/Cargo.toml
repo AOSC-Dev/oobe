@@ -5,7 +5,7 @@ edition = "2024"
 
 [dependencies]
 serde = { version = "1", features = ["derive"] }
-install = { git = "https://github.com/AOSC-Dev/deploykit-backend", package = "install", tag = "v0.10.1"  }
+install = { git = "https://github.com/AOSC-Dev/deploykit-backend", package = "install", tag = "v0.10.2"  }
 anyhow = "1"
 serde_json = "1"
 nom = "8"
